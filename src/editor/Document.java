@@ -40,7 +40,21 @@ public class Document {
     
     
     
-    
+    public void updateDisplayRow(int row) {
+        LinkedList<Character> dataRow = data.get(cursorRow);
+        for (int i = 0; i < CharacterDisplay.WIDTH; i++) {
+             
+            Character c = '\u0000';
+            
+            if (dataRow.size() > i)
+                c = dataRow.get(i);
+            
+            
+            
+            display.displayChar(c, row, i);
+        }
+        
+    }
     
     /**
      * Blir kalt ved tastetrykk, skal printe til skjerm og manipulere data-listen
@@ -50,7 +64,29 @@ public class Document {
         
         display.displayChar(c, cursorRow, cursorCol);
         
-        data.get(cursorRow).add(c);
+        LinkedList<Character> currentRow = data.get(cursorRow);
+        
+        if (cursorCol > currentRow.size())
+            currentRow.add(c);
+        else {
+            //setter inn character i midten
+            currentRow.add(cursorCol,c);
+            updateDisplayRow(cursorRow);
+        }
+        
+        
+        if (currentRow.size() > CharacterDisplay.WIDTH) {
+            //line overflow, split row into new
+            
+            
+            LinkedList<Character> newRow = new LinkedList<Character>();
+            newRow.add(currentRow.getLast());
+            currentRow.removeLast();
+            data.add(cursorRow, newRow);
+            
+            updateDisplayRow(cursorRow);
+        }
+            
         
         cursorCol++;
         if (cursorCol >= CharacterDisplay.WIDTH) {
@@ -60,7 +96,10 @@ public class Document {
             cursorRow++;
         }
         
-        
+        if (cursorCol > 6 && cursorRow == 1) {
+            cursorCol = 6;
+            cursorRow = 0;
+        }
         
         
         display.displayCursor(c,
