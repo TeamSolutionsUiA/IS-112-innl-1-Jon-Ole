@@ -114,8 +114,6 @@ public class Document {
             //line overflow, split row into new or move to next row if it has space
             
             
-            //LinkedList<Character> newRow = new LinkedList<Character>();
-	    
 	    char c2 = currentRow.getLast();
 	    currentRow.removeLast();
             addCharToStartOfRow(c2, cursorRow + 1);
@@ -131,15 +129,14 @@ public class Document {
         if (cursorCol >= CharacterDisplay.WIDTH) {
             cursorCol = 0;
             cursorRow++;
+	    
+	    //add new row to data if needed
             if (data.size() <= cursorRow) 
 		data.add(cursorRow, new LinkedList<>());
             
         }
         
-        if (cursorCol > 8 && cursorRow == 2) {
-            cursorCol = 4;
-            cursorRow = 0;
-        }
+        
         
         
 	
@@ -149,5 +146,43 @@ public class Document {
         display.displayCursor(data[cursorRow][cursorCol],
                               cursorRow, cursorCol);
         */
+    }
+    
+    public void moveCursor(String key) {
+	
+	if (key.equals("enter")) {
+	    LinkedList<Character> currentRow = data.get(cursorRow);
+	    
+	    LinkedList<Character> newRow = new LinkedList<>(currentRow.subList(cursorCol, currentRow.size() - 1));
+	    data.add(cursorRow + 1, newRow);
+	    currentRow.removeAll(newRow);
+	    updateDisplayFromRow(cursorRow);
+	}
+	else if (key.equals("up")) {
+	    cursorRow--;
+	    if (cursorRow < 0)
+		cursorRow = 0;
+	}
+	else if (key.equals("down")) {
+	    cursorRow++;
+	    if (cursorRow < 0)
+		cursorRow = 0;
+	}
+	else if (key.equals("right")) {
+	    cursorCol++;
+	    if (cursorCol > CharacterDisplay.WIDTH) {
+		cursorCol = 0;
+		cursorRow++;
+	    }
+	}
+	else if (key.equals("left")) {
+	    cursorCol--;
+	    if (cursorCol < 0) {
+		cursorCol = CharacterDisplay.WIDTH - 1;
+		cursorRow--;
+	    }
+	}
+	display.displayCursor('a',
+                              cursorRow, cursorCol);
     }
 }
