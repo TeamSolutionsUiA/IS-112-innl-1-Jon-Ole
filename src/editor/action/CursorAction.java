@@ -9,6 +9,8 @@ import editor.Document;
 import editor.Editor;
 import java.awt.event.ActionEvent;
 
+
+
 /**
  *
  * @author Ole Christian & Jonathan

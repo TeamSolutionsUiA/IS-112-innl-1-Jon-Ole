@@ -96,6 +96,8 @@ public class Editor extends JFrame {
         inputMap.put(keyStroke, action.getName());
         actionMap.put(action.getName(), action);
     }
+    
+    
 
     public void addKeyMappings() {
         inputMap.clear();
@@ -108,13 +110,16 @@ public class Editor extends JFrame {
 	addKeyMapping(KeyStroke.getKeyStroke("released DOWN"), (EditorAction) new CursorAction("down", this, "down"));
 	addKeyMapping(KeyStroke.getKeyStroke("released RIGHT"), (EditorAction) new CursorAction("right", this, "right"));
 	addKeyMapping(KeyStroke.getKeyStroke("released LEFT"), (EditorAction) new CursorAction("left", this, "left"));
+	addKeyMapping(KeyStroke.getKeyStroke("released BACK_SPACE"), (EditorAction) new CursorAction("backspace", this, "backspace"));
 	
 	
+	/*
 	addKeyMapping(KeyStroke.getKeyStroke(KeyEvent.VK_UP,0), new CursorAction("key_up", this, "up")); //virker ikke
 	addKeyMapping(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,InputEvent.ALT_DOWN_MASK), new CursorAction("key_down", this, "down")); //virker (alt tab + pil ned)
 	
 	addKeyMapping(KeyStroke.getKeyStroke("UP"), (EditorAction) new CursorAction("up", this, "up")); //virker ikke
 	addKeyMapping(KeyStroke.getKeyStroke("released UP"), (EditorAction) new CursorAction("up", this, "up")); //virker, men bare etter key release
+	*/
 	
         for (char ch = '!'; ch <= 'ÿ'; ch++) {
             String name = "insertChar";

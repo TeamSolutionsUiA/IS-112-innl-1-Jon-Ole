@@ -5,6 +5,7 @@
  */
 package editor;
 
+import java.lang.Math;
 import editor.display.CharacterDisplay;
 import java.util.LinkedList;
 
@@ -50,11 +51,12 @@ public class Document {
         LinkedList<Character> dataRow = data.get(rowNum);
         for (int i = 0; i < CharacterDisplay.WIDTH; i++) {
              
-            char c = '\u0000';
+            char c;
             
             if (i < dataRow.size())
                 c = dataRow.get(i);
-            
+            else
+		c = '\u0000';
             
             
             display.displayChar(c, rowNum, i);
@@ -135,25 +137,19 @@ public class Document {
 		data.add(cursorRow, new LinkedList<>());
             
         }
-        
-        
-        
-        
 	
         display.displayCursor(c,
                               cursorRow, cursorCol);
-        /*
-        display.displayCursor(data[cursorRow][cursorCol],
-                              cursorRow, cursorCol);
-        */
     }
+    
     
     public void moveCursor(String key) {
 	
 	if (key.equals("enter")) {
 	    LinkedList<Character> currentRow = data.get(cursorRow);
 	    
-	    LinkedList<Character> newRow = new LinkedList<>(currentRow.subList(cursorCol, currentRow.size() - 1));
+	    
+	    LinkedList<Character> newRow = new LinkedList<>(currentRow.subList(cursorCol, currentRow.size()));
 	    data.add(cursorRow + 1, newRow);
 	    currentRow.removeAll(newRow);
 	    updateDisplayFromRow(cursorRow);
@@ -162,11 +158,12 @@ public class Document {
 	    cursorRow--;
 	    if (cursorRow < 0)
 		cursorRow = 0;
+	    
+	    moveCursorToRow(cursorRow);
 	}
 	else if (key.equals("down")) {
-	    cursorRow++;
-	    if (cursorRow < 0)
-		cursorRow = 0;
+	    
+	    moveCursorToRow(cursorRow + 1);
 	}
 	else if (key.equals("right")) {
 	    cursorCol++;
@@ -174,6 +171,7 @@ public class Document {
 		cursorCol = 0;
 		cursorRow++;
 	    }
+	    
 	}
 	else if (key.equals("left")) {
 	    cursorCol--;
@@ -182,7 +180,33 @@ public class Document {
 		cursorRow--;
 	    }
 	}
+	else if (key.equals("backspace")) {
+	    LinkedList<Character> currentRow = data.get(cursorRow);
+	    if(currentRow.size() <= 0) {
+		//TODO: fjern row
+		cursorRow--;
+		moveCursorToRow(cursorRow);
+		
+	    }
+	    else {
+		currentRow.remove(cursorCol-1);
+		moveCursor("left");
+	    }
+	    updateDisplayFromRow(cursorRow);
+		
+	}
 	display.displayCursor('a',
                               cursorRow, cursorCol);
+    }
+    
+    public void moveCursorToRow(int rowNum) {
+	cursorRow = rowNum;
+	
+	LinkedList<Character> currentRow = data.get(cursorRow);
+	
+	cursorCol = Math.min(cursorCol, currentRow.size() - 1);
+	
+	if (cursorCol > currentRow.size())
+	    cursorRow = currentRow.size();
     }
 }
