@@ -5,6 +5,7 @@
  */
 package editor;
 
+import java.util.Iterator;
 import java.lang.Math;
 import editor.display.CharacterDisplay;
 import java.util.LinkedList;
@@ -24,7 +25,7 @@ public class Document {
     private int cursorRow;
     private int cursorCol;
     private LinkedList<LinkedList<Character>> data;
-    
+    private boolean overwriteMode;
     
     
 
@@ -34,7 +35,7 @@ public class Document {
         data = new LinkedList<>();
         data.add(new LinkedList<>());
         
-        
+        overwriteMode = false;
         cursorCol = cursorRow = 0;
         display.displayCursor(' ', cursorRow, cursorCol);
     }
@@ -45,21 +46,23 @@ public class Document {
      * @param rowNum 
      */
     public void updateDisplayRow(int rowNum) {
+	//TODO: optimaliser
 	if (rowNum >= data.size())
 	    return;
 	
         LinkedList<Character> dataRow = data.get(rowNum);
-        for (int i = 0; i < CharacterDisplay.WIDTH; i++) {
-             
-            char c;
-            
-            if (i < dataRow.size())
-                c = dataRow.get(i);
-            else
-		c = '\u0000';
-            
-            
+	Iterator<Character> it = dataRow.iterator();
+	int i = 0;
+	while(it.hasNext()) {
+	    Character c = it.next();
+	    
             display.displayChar(c, rowNum, i);
+	    i++;
+	}
+	
+	//print ut tomme tegn på resten av linjen
+        for (int j = i; j < CharacterDisplay.WIDTH; j++) {
+            display.displayChar('\u0000', rowNum, j);
         }
         
     }
@@ -101,31 +104,36 @@ public class Document {
         display.displayChar(c, cursorRow, cursorCol);
         
         LinkedList<Character> currentRow = data.get(cursorRow);
-        
-        if (cursorCol >= currentRow.size())
-	    //sett inn char på slutten av linjen
-            currentRow.add(c);
-        else {
-            //setter inn character i midten av linjen
-            currentRow.add(cursorCol,c);
-            updateDisplayRow(cursorRow);
-        }
-        
-        
-        if (currentRow.size() > CharacterDisplay.WIDTH) {
-            //line overflow, split row into new or move to next row if it has space
-            
-            
-	    char c2 = currentRow.getLast();
-	    currentRow.removeLast();
-            addCharToStartOfRow(c2, cursorRow + 1);
-            
-            
-            
-	    updateDisplayFromRow(cursorRow);
-            
-        }
-            
+        if (overwriteMode && cursorCol < (currentRow.size())) {
+	    //overwriting
+	    currentRow.set(cursorCol, c);
+	}
+	else {
+	    //inserting
+	    if (cursorCol >= currentRow.size())
+		//sett inn char på slutten av linjen
+		currentRow.add(c);
+	    else {
+		//setter inn character i midten av linjen
+		currentRow.add(cursorCol,c);
+		updateDisplayRow(cursorRow);
+	    }
+
+
+	    if (currentRow.size() > CharacterDisplay.WIDTH) {
+		//line overflow, split row into new or move to next row if it has space
+
+
+		char c2 = currentRow.getLast();
+		currentRow.removeLast();
+		addCharToStartOfRow(c2, cursorRow + 1);
+
+
+
+		updateDisplayFromRow(cursorRow);
+
+	    }
+	}
         
         cursorCol++;
         if (cursorCol >= CharacterDisplay.WIDTH) {
@@ -144,44 +152,55 @@ public class Document {
     
     
     public void moveCursor(String key) {
+	LinkedList<Character> currentRow = data.get(cursorRow);
+	
 	
 	if (key.equals("enter")) {
-	    LinkedList<Character> currentRow = data.get(cursorRow);
 	    
 	    
 	    LinkedList<Character> newRow = new LinkedList<>(currentRow.subList(cursorCol, currentRow.size()));
 	    data.add(cursorRow + 1, newRow);
 	    currentRow.removeAll(newRow);
+	    
+	    
 	    updateDisplayFromRow(cursorRow);
+	    
+	    cursorCol = 0;
+	    cursorRow++;
 	}
 	else if (key.equals("up")) {
-	    cursorRow--;
-	    if (cursorRow < 0)
-		cursorRow = 0;
 	    
-	    moveCursorToRow(cursorRow);
+	    moveCursorToRow(cursorRow - 1);
 	}
 	else if (key.equals("down")) {
 	    
 	    moveCursorToRow(cursorRow + 1);
 	}
 	else if (key.equals("right")) {
-	    cursorCol++;
-	    if (cursorCol > CharacterDisplay.WIDTH) {
-		cursorCol = 0;
-		cursorRow++;
+	    
+	    if (cursorCol < Math.min(CharacterDisplay.WIDTH,currentRow.size()))
+		cursorCol++;
+	    else if (cursorRow + 1 < data.size()) {
+		moveCursorToRow(cursorRow + 1);
 	    }
+		
+		
+	    
 	    
 	}
 	else if (key.equals("left")) {
-	    cursorCol--;
-	    if (cursorCol < 0) {
+	    
+	    
+	    if (cursorCol <= 0 && cursorRow > 0) {
 		cursorCol = CharacterDisplay.WIDTH - 1;
-		cursorRow--;
+		moveCursorToRow(cursorRow - 1);
 	    }
+	    else if (cursorCol <= 0 && cursorRow == 0)
+		cursorCol = 0;
+	    else
+		cursorCol--;
 	}
 	else if (key.equals("backspace")) {
-	    LinkedList<Character> currentRow = data.get(cursorRow);
 	    if(currentRow.size() <= 0) {
 		//TODO: fjern row
 		cursorRow--;
@@ -195,18 +214,32 @@ public class Document {
 	    updateDisplayFromRow(cursorRow);
 		
 	}
+	
 	display.displayCursor('a',
                               cursorRow, cursorCol);
     }
     
+    public void miscKeyPressed(String key) {
+	if (key.equals("insert")) {
+	    if (overwriteMode)
+		overwriteMode = false;
+	    else
+		overwriteMode = true;
+	}
+    }
+    
     public void moveCursorToRow(int rowNum) {
-	cursorRow = rowNum;
+	cursorRow = Math.min(rowNum, data.size() -1);
+	cursorRow = Math.max(0,cursorRow);
 	
 	LinkedList<Character> currentRow = data.get(cursorRow);
 	
-	cursorCol = Math.min(cursorCol, currentRow.size() - 1);
+	cursorCol = Math.min(cursorCol, currentRow.size());
 	
 	if (cursorCol > currentRow.size())
 	    cursorRow = currentRow.size();
     }
+    
+    
+    
 }
