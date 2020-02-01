@@ -102,41 +102,36 @@ public class Editor extends JFrame {
         actionMap.clear();
 	
 	
+	addKeyMapping(KeyStroke.getKeyStroke("released ENTER"),		new CursorAction("enter", this, "enter"));
+	addKeyMapping(KeyStroke.getKeyStroke("released UP"),		new CursorAction("up", this, "up"));
+	addKeyMapping(KeyStroke.getKeyStroke("released DOWN"),		new CursorAction("down", this, "down"));
+	addKeyMapping(KeyStroke.getKeyStroke("released RIGHT"),		new CursorAction("right", this, "right"));
+	addKeyMapping(KeyStroke.getKeyStroke("released LEFT"),		new CursorAction("left", this, "left"));
+	addKeyMapping(KeyStroke.getKeyStroke("released BACK_SPACE"),	new CursorAction("backspace", this, "backspace"));
 	
-	addKeyMapping(KeyStroke.getKeyStroke("released ENTER"), (EditorAction) new CursorAction("enter", this, "enter"));
-	
-	addKeyMapping(KeyStroke.getKeyStroke("released UP"), (EditorAction) new CursorAction("up", this, "up"));
-	addKeyMapping(KeyStroke.getKeyStroke("released DOWN"), (EditorAction) new CursorAction("down", this, "down"));
-	addKeyMapping(KeyStroke.getKeyStroke("released RIGHT"), (EditorAction) new CursorAction("right", this, "right"));
-	addKeyMapping(KeyStroke.getKeyStroke("released LEFT"), (EditorAction) new CursorAction("left", this, "left"));
-	addKeyMapping(KeyStroke.getKeyStroke("released BACK_SPACE"), (EditorAction) new CursorAction("backspace", this, "backspace"));
-	
-	
-	addKeyMapping(KeyStroke.getKeyStroke("released INSERT"), (EditorAction) new MiscAction("insert", this, "insert"));
+	addKeyMapping(KeyStroke.getKeyStroke("released INSERT"),	new MiscAction("insert", this, "insert"));
 	
 	
-	/*addKeyMapping(KeyStroke.getKeyStroke(KeyEvent.VK_UP,0), new CursorAction("key_up", this, "up")); //virker ikke
-	addKeyMapping(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN,InputEvent.), new CursorAction("key_down", this, "down")); //virker (alt tab + pil ned)
-	
-	addKeyMapping(KeyStroke.getKeyStroke("UP"), (EditorAction) new CursorAction("up", this, "up")); //virker ikke
-	addKeyMapping(KeyStroke.getKeyStroke("released UP"), (EditorAction) new CursorAction("up", this, "up")); //virker, men bare etter key release
-	*/
-	
-	
-        for (char ch = '!'; ch <= 'ÿ'; ch++) {
+        for (char ch = '!'; ch <= 'ÿ'; ch++) { //
             String name = "insertChar";
             EditorAction action = new InsertAction(name, this);
             addKeyMapping(KeyStroke.getKeyStroke(ch), action);
         }
+	addKeyMapping(KeyStroke.getKeyStroke(' '), new InsertAction("insertChar", this));
 	
 	/*
 	for (int i = 0; i < 255; i++) {
-	    String name = "insertChar";
-	    EditorAction action = new InsertAction(name, this);
+	    KeyStroke ks = KeyStroke.getKeyStroke((char) i);
+	    if (inputMap.get(ks) == null) {
+		String name = "insertChar";
+		EditorAction action = new InsertAction(name, this);
+
+		addKeyMapping(KeyStroke.getKeyStroke((char) i), action);
+	    }
 	    
-	    addKeyMapping(KeyStroke.getKeyStroke((char) i), action);
 	}
 	*/
+	
 	
 	
     }

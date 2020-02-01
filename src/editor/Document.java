@@ -38,6 +38,12 @@ public class Document {
         overwriteMode = false;
         cursorCol = cursorRow = 0;
         display.displayCursor(' ', cursorRow, cursorCol);
+	
+	String welcomeMessage = "[INSERT] Toggle mode";
+	for(int i = 0, n = welcomeMessage.length() ; i < n ; i++) { 
+	    char c = welcomeMessage.charAt(i); 
+	    display.displayChar(c, CharacterDisplay.HEIGHT - 1, i);
+	}
     }
     
     
@@ -46,23 +52,20 @@ public class Document {
      * @param rowNum 
      */
     public void updateDisplayRow(int rowNum) {
-	//TODO: optimaliser
+	//TODO: optimaliser, iterator til foreach
 	if (rowNum >= data.size())
 	    return;
 	
         LinkedList<Character> dataRow = data.get(rowNum);
-	Iterator<Character> it = dataRow.iterator();
 	int i = 0;
-	while(it.hasNext()) {
-	    Character c = it.next();
-	    
-            display.displayChar(c, rowNum, i);
+	for(Character c : dataRow) {
+	    display.displayChar(c, rowNum, i);
 	    i++;
 	}
 	
 	//print ut tomme tegn på resten av linjen
         for (int j = i; j < CharacterDisplay.WIDTH; j++) {
-            display.displayChar('\u0000', rowNum, j);
+            display.displayChar(' ', rowNum, j);
         }
         
     }
@@ -72,8 +75,14 @@ public class Document {
      * @param rowNum 
      */
     public void updateDisplayFromRow(int rowNum) {
-	for (int i = rowNum; i < CharacterDisplay.HEIGHT; i++)
+	//TODO:optimaliser
+	for (int i = rowNum; i < data.size(); i++)
             updateDisplayRow(i);
+	
+	
+	for (int j = 0; j < CharacterDisplay.WIDTH; j++) {
+            display.displayChar('\u0000', data.size(), j);
+        }
     }
     
     /**
@@ -160,8 +169,8 @@ public class Document {
 	    
 	    LinkedList<Character> newRow = new LinkedList<>(currentRow.subList(cursorCol, currentRow.size()));
 	    data.add(cursorRow + 1, newRow);
-	    currentRow.removeAll(newRow);
 	    
+	    currentRow.subList(cursorCol, currentRow.size()).clear();
 	    
 	    updateDisplayFromRow(cursorRow);
 	    
@@ -169,11 +178,9 @@ public class Document {
 	    cursorRow++;
 	}
 	else if (key.equals("up")) {
-	    
 	    moveCursorToRow(cursorRow - 1);
 	}
 	else if (key.equals("down")) {
-	    
 	    moveCursorToRow(cursorRow + 1);
 	}
 	else if (key.equals("right")) {
@@ -181,16 +188,11 @@ public class Document {
 	    if (cursorCol < Math.min(CharacterDisplay.WIDTH,currentRow.size()))
 		cursorCol++;
 	    else if (cursorRow + 1 < data.size()) {
+		cursorCol = 0;
 		moveCursorToRow(cursorRow + 1);
 	    }
-		
-		
-	    
-	    
 	}
 	else if (key.equals("left")) {
-	    
-	    
 	    if (cursorCol <= 0 && cursorRow > 0) {
 		cursorCol = CharacterDisplay.WIDTH - 1;
 		moveCursorToRow(cursorRow - 1);
@@ -201,11 +203,27 @@ public class Document {
 		cursorCol--;
 	}
 	else if (key.equals("backspace")) {
-	    if(currentRow.size() <= 0) {
+	    if (cursorCol <= 0 && cursorRow <= 0)
+		return;
+	    
+	    if(currentRow.size() <= 0) { //linjen er tom
 		//TODO: fjern row
 		cursorRow--;
 		moveCursorToRow(cursorRow);
 		
+	    }
+	    else if (cursorCol <= 0) { //cursor i begynnelsen av linjen, men fortsatt tegn igjen på linjen. Flytt tegnene opp til slutten av forrige linje
+		LinkedList<Character> previousRow = data.get(cursorRow - 1);
+		cursorCol = previousRow.size();
+		previousRow.addAll(currentRow);
+		data.remove(cursorRow); 
+		cursorRow--;
+		
+		if (previousRow.size() > CharacterDisplay.WIDTH) { //for mange tegn, må splitte raden
+		    LinkedList<Character> newRow = new LinkedList<>(previousRow.subList(CharacterDisplay.WIDTH, previousRow.size()));
+		    data.add(cursorRow + 1, newRow);
+		    previousRow.subList(CharacterDisplay.WIDTH, previousRow.size()).clear();
+		}
 	    }
 	    else {
 		currentRow.remove(cursorCol-1);
@@ -228,6 +246,10 @@ public class Document {
 	}
     }
     
+    /**
+     * Flytter cursor til radnummer og eventuelt til maks siste tegn i linjen.
+     * @param rowNum 
+     */
     public void moveCursorToRow(int rowNum) {
 	cursorRow = Math.min(rowNum, data.size() -1);
 	cursorRow = Math.max(0,cursorRow);
