@@ -3,13 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/ocj/Documents/is%20211%20algoritmer/IS-112-innl-1-Jon-Ole/src/editor/action/InsertAction.java</file>
-            <file>file:/C:/Users/ocj/Documents/is%20211%20algoritmer/IS-112-innl-1-Jon-Ole/src/editor/Editor.java</file>
-            <file>file:/C:/Users/ocj/Documents/is%20211%20algoritmer/IS-112-innl-1-Jon-Ole/src/editor/action/EditorAction.java</file>
-            <file>file:/C:/Users/ocj/Documents/is%20211%20algoritmer/IS-112-innl-1-Jon-Ole/src/editor/display/CharacterDisplay.java</file>
-            <file>file:/C:/Users/ocj/Documents/is%20211%20algoritmer/IS-112-innl-1-Jon-Ole/src/editor/action/CursorAction.java</file>
-            <file>file:/C:/Users/ocj/Documents/is%20211%20algoritmer/IS-112-innl-1-Jon-Ole/src/editor/Document.java</file>
-            <file>file:/C:/Users/ocj/Documents/is%20211%20algoritmer/IS-112-innl-1-Jon-Ole/src/editor/action/MiscAction.java</file>
+            <file>file:/Users/Jonathans/NetBeansProjects/IS-211/mandatory1/IS-112-innl-1-Jon-Ole/src/editor/display/CharacterDisplay.java</file>
+            <file>file:/Users/Jonathans/NetBeansProjects/IS-211/mandatory1/IS-112-innl-1-Jon-Ole/src/editor/Editor.java</file>
+            <file>file:/Users/Jonathans/NetBeansProjects/IS-211/mandatory1/IS-112-innl-1-Jon-Ole/src/editor/action/EditorAction.java</file>
+            <file>file:/Users/Jonathans/NetBeansProjects/IS-211/mandatory1/IS-112-innl-1-Jon-Ole/src/editor/Document.java</file>
+            <file>file:/Users/Jonathans/NetBeansProjects/IS-211/mandatory1/IS-112-innl-1-Jon-Ole/src/editor/action/InsertAction.java</file>
+            <file>file:/Users/Jonathans/NetBeansProjects/IS-211/mandatory1/IS-112-innl-1-Jon-Ole/src/editor/action/CursorAction.java</file>
+            <file>file:/Users/Jonathans/NetBeansProjects/IS-211/mandatory1/IS-112-innl-1-Jon-Ole/src/editor/action/MiscAction.java</file>
         </group>
     </open-files>
 </project-private>

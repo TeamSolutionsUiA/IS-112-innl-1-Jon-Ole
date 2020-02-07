@@ -9,8 +9,6 @@ import editor.Document;
 import editor.Editor;
 import java.awt.event.ActionEvent;
 
-
-
 /**
  *
  * @author Ole Christian & Jonathan
@@ -29,8 +27,6 @@ public class CursorAction extends EditorAction {
     @Override
     public void actionPerformed(ActionEvent ae) {
         Document doc = editor.getDocument();
-        
-        
 	doc.moveCursor(key);
     }
 }
