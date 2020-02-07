@@ -120,7 +120,9 @@ public class Document {
 	    else {
 		//setter inn karakter i midten av linjen
 		currentRow.add(cursorCol,c);
-		updateDisplayRow(cursorRow);
+		
+		if (currentRow.size() <= CharacterDisplay.WIDTH)
+		    updateDisplayRow(cursorRow);
 	    }
 	    if (currentRow.size() > CharacterDisplay.WIDTH) {
 		//linje "overflow". Splitt rad til en ny rad eller flytt til neste rad hvis den har plass. 
