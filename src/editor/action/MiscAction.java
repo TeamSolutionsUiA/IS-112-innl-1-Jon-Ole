@@ -9,8 +9,6 @@ import editor.Document;
 import editor.Editor;
 import java.awt.event.ActionEvent;
 
-
-
 /**
  *
  * @author Ole Christian & Jonathan
@@ -28,9 +26,7 @@ public class MiscAction extends EditorAction {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        Document doc = editor.getDocument();
-        
-        
+        Document doc = editor.getDocument();      
 	doc.miscKeyPressed(key);
     }
 }

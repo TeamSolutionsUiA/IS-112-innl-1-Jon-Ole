@@ -10,10 +10,8 @@ import editor.display.CharacterDisplay;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.HeadlessException;
-import java.awt.event.InputEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.KeyEvent;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -94,46 +92,25 @@ public class Editor extends JFrame {
         inputMap.put(keyStroke, action.getName());
         actionMap.put(action.getName(), action);
     }
-    
-    
 
     public void addKeyMappings() {
         inputMap.clear();
         actionMap.clear();
-	
-	
-	addKeyMapping(KeyStroke.getKeyStroke("released ENTER"),		new CursorAction("enter", this, "enter"));
-	addKeyMapping(KeyStroke.getKeyStroke("released UP"),		new CursorAction("up", this, "up"));
-	addKeyMapping(KeyStroke.getKeyStroke("released DOWN"),		new CursorAction("down", this, "down"));
-	addKeyMapping(KeyStroke.getKeyStroke("released RIGHT"),		new CursorAction("right", this, "right"));
-	addKeyMapping(KeyStroke.getKeyStroke("released LEFT"),		new CursorAction("left", this, "left"));
-	addKeyMapping(KeyStroke.getKeyStroke("released BACK_SPACE"),	new CursorAction("backspace", this, "backspace"));
-	
-	addKeyMapping(KeyStroke.getKeyStroke("released INSERT"),	new MiscAction("insert", this, "insert"));
-	
-	
-        for (char ch = '!'; ch <= 'ÿ'; ch++) { //
+
+        addKeyMapping(KeyStroke.getKeyStroke("released ENTER"), new CursorAction("enter", this, "enter"));
+        addKeyMapping(KeyStroke.getKeyStroke("released UP"), new CursorAction("up", this, "up"));
+        addKeyMapping(KeyStroke.getKeyStroke("released DOWN"), new CursorAction("down", this, "down"));
+        addKeyMapping(KeyStroke.getKeyStroke("released RIGHT"), new CursorAction("right", this, "right"));
+        addKeyMapping(KeyStroke.getKeyStroke("released LEFT"), new CursorAction("left", this, "left"));
+        addKeyMapping(KeyStroke.getKeyStroke("released BACK_SPACE"), new CursorAction("backspace", this, "backspace"));
+        addKeyMapping(KeyStroke.getKeyStroke("released INSERT"), new MiscAction("insert", this, "insert"));
+
+        for (char ch = '!'; ch <= 'ÿ'; ch++) {
             String name = "insertChar";
             EditorAction action = new InsertAction(name, this);
             addKeyMapping(KeyStroke.getKeyStroke(ch), action);
         }
-	addKeyMapping(KeyStroke.getKeyStroke(' '), new InsertAction("insertChar", this));
-	
-	/*
-	for (int i = 0; i < 255; i++) {
-	    KeyStroke ks = KeyStroke.getKeyStroke((char) i);
-	    if (inputMap.get(ks) == null) {
-		String name = "insertChar";
-		EditorAction action = new InsertAction(name, this);
-
-		addKeyMapping(KeyStroke.getKeyStroke((char) i), action);
-	    }
-	    
-	}
-	*/
-	
-	
-	
+        addKeyMapping(KeyStroke.getKeyStroke(' '), new InsertAction("insertChar", this));
     }
 
     public CharacterDisplay getDisplay() {

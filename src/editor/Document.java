@@ -5,8 +5,7 @@
  */
 package editor;
 
-import java.util.Iterator;
-import java.lang.Math;
+
 import editor.display.CharacterDisplay;
 import java.util.LinkedList;
 
@@ -31,7 +30,6 @@ public class Document {
 
     public Document(CharacterDisplay display) {
         this.display = display;
-        //data = new char[CharacterDisplay.HEIGHT][CharacterDisplay.WIDTH];
         data = new LinkedList<>();
         data.add(new LinkedList<>());
         
@@ -39,20 +37,19 @@ public class Document {
         cursorCol = cursorRow = 0;
         display.displayCursor(' ', cursorRow, cursorCol);
 	
-	String welcomeMessage = "[INSERT] Toggle mode";
+	String welcomeMessage = "[INSERT] set Toggle mode";
 	for(int i = 0, n = welcomeMessage.length() ; i < n ; i++) { 
 	    char c = welcomeMessage.charAt(i); 
 	    display.displayChar(c, CharacterDisplay.HEIGHT - 1, i);
 	}
     }
     
-    
     /**
      * Oppdaterer displayet til radnr
      * @param rowNum 
      */
     public void updateDisplayRow(int rowNum) {
-	//TODO: optimaliser, iterator til foreach
+	
 	if (rowNum >= data.size())
 	    return;
 	
@@ -75,10 +72,8 @@ public class Document {
      * @param rowNum 
      */
     public void updateDisplayFromRow(int rowNum) {
-	//TODO:optimaliser
 	for (int i = rowNum; i < data.size(); i++)
             updateDisplayRow(i);
-	
 	
 	for (int j = 0; j < CharacterDisplay.WIDTH; j++) {
             display.displayChar('\u0000', data.size(), j);
@@ -86,7 +81,7 @@ public class Document {
     }
     
     /**
-     * Legg til char i starten på linjenummer, forsett recursive dersom linjen overflower
+     * Legg til char i starten på linjenummer, forsett "recursive" dersom linjen "overflower"
      * @param c 
      * @param rowNum radnummer
      */
@@ -114,31 +109,24 @@ public class Document {
         
         LinkedList<Character> currentRow = data.get(cursorRow);
         if (overwriteMode && cursorCol < (currentRow.size())) {
-	    //overwriting
+	    //overskriving
 	    currentRow.set(cursorCol, c);
 	}
 	else {
-	    //inserting
+	    //insetting
 	    if (cursorCol >= currentRow.size())
-		//sett inn char på slutten av linjen
+		//sett inn karakter på slutten av linjen
 		currentRow.add(c);
 	    else {
-		//setter inn character i midten av linjen
+		//setter inn karakter i midten av linjen
 		currentRow.add(cursorCol,c);
 		updateDisplayRow(cursorRow);
 	    }
-
-
 	    if (currentRow.size() > CharacterDisplay.WIDTH) {
-		//line overflow, split row into new or move to next row if it has space
-
-
+		//linje "overflow". Splitt rad til en ny rad eller flytt til neste rad hvis den har plass. 
 		char c2 = currentRow.getLast();
 		currentRow.removeLast();
 		addCharToStartOfRow(c2, cursorRow + 1);
-
-
-
 		updateDisplayFromRow(cursorRow);
 
 	    }
@@ -149,7 +137,7 @@ public class Document {
             cursorCol = 0;
             cursorRow++;
 	    
-	    //add new row to data if needed
+	    //Legg til ny rad ved behov.
             if (data.size() <= cursorRow) 
 		data.add(cursorRow, new LinkedList<>());
             
@@ -163,10 +151,8 @@ public class Document {
     public void moveCursor(String key) {
 	LinkedList<Character> currentRow = data.get(cursorRow);
 	
-	
 	if (key.equals("enter")) {
-	    
-	    
+	   
 	    LinkedList<Character> newRow = new LinkedList<>(currentRow.subList(cursorCol, currentRow.size()));
 	    data.add(cursorRow + 1, newRow);
 	    
@@ -207,7 +193,6 @@ public class Document {
 		return;
 	    
 	    if(currentRow.size() <= 0) { //linjen er tom
-		//TODO: fjern row
 		cursorRow--;
 		moveCursorToRow(cursorRow);
 		
